@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 
-import Button from "@mui/material/Button";
-
 import Layout from "../components/Layout";
 import {
   Accordion,
@@ -9,25 +7,21 @@ import {
   AccordionSummary,
   Box,
   Grid,
-  Paper,
-  TextField,
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { useTheme } from "@emotion/react";
-import styled from "styled-components";
+import Form from "../components/Form";
+import SocialList from "../components/SocialList";
+import axios from "axios";
+import useSWR from "swr";
 
 export const Index = () => {
   const [first, setfirst] = useState(false);
-  const theme = useTheme();
-
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
+  const [socialEdit, setSocialEdit] = useState<any>(null);
+  const { data, error, isLoading, mutate } = useSWR(
+    " http://localhost:3030/socials",
+    axios
+  );
 
   return (
     <Layout>
@@ -48,7 +42,7 @@ export const Index = () => {
             padding: "20px 20px",
           }}
         >
-          <p>مسیرهای ارتباطی</p>
+          <p className="mb-2">مسیرهای ارتباطی</p>
           <Accordion
             TransitionProps={{ unmountOnExit: true }}
             expanded={first === true}
@@ -66,41 +60,14 @@ export const Index = () => {
               </Typography>
             </AccordionSummary>
             <AccordionDetails sx={{ background: "#323D48", borderRadius: 2 }}>
-              افزودن مسیر ارتباطی جدید
-              <Box>
-                <Grid container spacing={1}>
-                  <Grid item xs={4}>
-                    <TextField
-                      sx={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Outlined"
-                      variant="outlined"
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      sx={{ width: "100%" }}
-                      id="outlined-basic"
-                      label="Outlined"
-                      variant="outlined"
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      sx={{ width: "100%", direction: "rtl" }}
-                      id="outlined-basic"
-                      label="سلشسیل"
-                      variant="outlined"
-                      dir="rtl"
-                      size="small"
-                    />
-                  </Grid>
-                </Grid>
-              </Box>
+              <Form reload={() => mutate()} id={socialEdit} />
             </AccordionDetails>
           </Accordion>
+          <SocialList
+            list={data}
+            reload={() => mutate()}
+            editHandler={(value: any) => setSocialEdit(value)}
+          />
         </Box>
       </Grid>
     </Layout>

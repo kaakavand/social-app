@@ -6,15 +6,16 @@ import { createTheme } from "@mui/material";
 import rtlPlugin from "stylis-plugin-rtl";
 import { prefixer } from "stylis";
 import createCache from "@emotion/cache";
-import { CacheProvider } from '@emotion/react';
+import { CacheProvider } from "@emotion/react";
 
 const theme = createTheme({
   palette: {
+    mode: "dark",
     warning: {
       main: "#FFAA28",
-      light: "#FFAA28",
-      dark: "#FFAA28",
-      contrastText: "#FFAA28",
+      light: "#757ce8",
+      dark: "#002884",
+      contrastText: "#fff",
     },
   },
   direction: "rtl", // Both here and <body dir="rtl">

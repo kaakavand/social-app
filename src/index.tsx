@@ -9,19 +9,17 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-const theme = createTheme({
-  palette: {
-    warning: {
-      main: "#E3D026",
-      light: "#E9DB5D",
-      dark: "#A29415",
-      contrastText: "#242105",
-    },
-  },
-});
+// const theme = createTheme({
+//   palette: {
+//     warning: {
+//       main: "#E3D026",
+//       light: "#E9DB5D",
+//       dark: "#A29415",
+//       contrastText: "#242105",
+//     },
+//   },
+// });
 
 root.render(
-    <ThemeProvider theme={theme}>
       <Index />
-    </ThemeProvider>
 );
