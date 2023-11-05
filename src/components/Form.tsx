@@ -120,7 +120,7 @@ const Form = ({
               size="small"
               value={formik.values.social_type}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              // onBlur={formik.handleBlur}
               // IconComponent={optionsSocial[0].icon}
               error={
                 formik.touched.social_type && Boolean(formik.errors.social_type)
@@ -160,7 +160,7 @@ const Form = ({
               size="small"
               value={formik.values.social_link}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              // onBlur={formik.handleBlur}
               error={
                 formik.touched.social_link && Boolean(formik.errors.social_link)
               }
@@ -181,7 +181,7 @@ const Form = ({
               size="small"
               value={formik.values.social_id}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              // onBlur={formik.handleBlur}
               error={
                 formik.touched.social_id && Boolean(formik.errors.social_id)
               }
