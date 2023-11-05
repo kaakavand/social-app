@@ -4,22 +4,17 @@ import { StyleSheetManager, ThemeProvider } from "styled-components";
 import stylisRTLPlugin from "stylis-plugin-rtl";
 import "./assets/styles/main.css";
 import { createTheme } from "@mui/material";
+import { ToastContainer } from 'react-toastify';
 
+import 'react-toastify/dist/ReactToastify.css';
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-// const theme = createTheme({
-//   palette: {
-//     warning: {
-//       main: "#E3D026",
-//       light: "#E9DB5D",
-//       dark: "#A29415",
-//       contrastText: "#242105",
-//     },
-//   },
-// });
 
 root.render(
+  <>
       <Index />
+      <ToastContainer />
+  </>
 );

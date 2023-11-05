@@ -10,6 +10,7 @@ import { useFormik } from "formik";
 import { optionsSocial } from "../config/options";
 import useSWRMutation from "swr/mutation";
 import ServerConfig from "./../config/server.json";
+import { toast } from "react-toastify";
 
 interface itemInterFace {
   social_id: string;
@@ -72,9 +73,9 @@ const Form = ({
 
     validationSchema: userSchema,
     onSubmit: async (values) => {
-      const newList = data.data.filter((el : {id : string}) => el.id !== id)
+      const newList = data.data.filter((el: { id: string }) => el.id !== id);
       if (
-        (!newList
+        !newList
           .map((el: itemInterFace) => el.social_id)
           .includes(values.social_id) &&
         !newList
@@ -82,16 +83,19 @@ const Form = ({
           .includes(values.social_link) &&
         !newList
           .map((el: itemInterFace) => el.social_type)
-          .includes(values.social_type)) 
+          .includes(values.social_type)
       ) {
         const res = await webService(
           id ? "put" : "post",
           `${ServerConfig.BASE_URL}${id ? id : ""}`,
           values
         );
+        if(!id){
+          formik.resetForm()
+        }
         reload();
       } else {
-        alert("asdf");
+        toast.error("مقادیر تکراری هستند");
       }
     },
   });
