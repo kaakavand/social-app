@@ -8,13 +8,16 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Box, Button } from "@mui/material";
 import { optionsSocial } from "../config/options";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { webService } from "../functions/webService";
-import CreateIcon from '@mui/icons-material/Create';
+import CreateIcon from "@mui/icons-material/Create";
+import Delete from "./Delete";
 
-const SocialList = ({ list, reload ,editHandler}: any) => {
+const SocialList = ({ list, reload, editHandler }: any) => {
   const deleteHandler = async (id: any) => {
-    const res = await webService("delete", "http://localhost:3030/socials/" + id);
+    const res = await webService(
+      "delete",
+      "http://localhost:3030/socials/" + id
+    );
     reload();
   };
 
@@ -27,7 +30,7 @@ const SocialList = ({ list, reload ,editHandler}: any) => {
         sx={{ background: "#323D48", boxShadow: "none" }}
         component={Paper}
       >
-        <Table sx={{ minWidth: 650 }} aria-label="simple table" >
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableBody>
             {list?.data.map((el: any) => (
               <TableRow
@@ -55,15 +58,7 @@ const SocialList = ({ list, reload ,editHandler}: any) => {
                   {el.social_link}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  <Button
-                    onClick={() => deleteHandler(el.id)}
-                    startIcon={<DeleteIcon sx={{ fontSize: 10 }} />}
-                    color="error"
-                    size="small"
-                    variant="text"
-                  >
-                    حذف
-                  </Button>
+                  <Delete onCLick={() => deleteHandler(el.id)} />
                   <Button
                     onClick={() => editHandler(el.id)}
                     startIcon={<CreateIcon sx={{ fontSize: 10 }} />}

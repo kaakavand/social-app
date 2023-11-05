@@ -8,13 +8,38 @@ import { Box, Grid, TextField, Typography } from "@mui/material";
 import { webService } from "../functions/webService";
 import { useFormik } from "formik";
 import { optionsSocial } from "../config/options";
+import useSWRMutation from "swr/mutation";
+import { Axios } from "axios";
+import CreateIcon from "@mui/icons-material/Create";
 
-const Form = ({ reload }: any) => {
-  const [social, setSocial] = useState({
-    social_id: "",
-    social_link: "",
-    social_type: "",
-  });
+async function postRequest(url: any, id: any) {
+  return fetch(url + id, {
+    method: "get",
+  }).then((res) => res.json());
+}
+
+const Form = ({ reload, id, cancelHandler }: any) => {
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { trigger } = useSWRMutation(
+    "http://localhost:3030/socials/" + id,
+    fetcher
+  );
+
+  useEffect(() => {
+    (async () => {
+      if (id) {
+        const res = await trigger();
+        formik.setValues(res);
+        console.log(res);
+      } else if (id === null) {
+        formik.setValues({
+          social_type: "",
+          social_id: "",
+          social_link: "",
+        });
+      }
+    })();
+  }, [id]);
 
   let userSchema = yup.object({
     social_type: yup.string().required(),
@@ -31,8 +56,8 @@ const Form = ({ reload }: any) => {
     validationSchema: userSchema,
     onSubmit: async (values) => {
       const res = await webService(
-        "post",
-        "http://localhost:3030/socials",
+        id ? "put" : "post",
+        `http://localhost:3030/socials${id ? "/" + id : ""}`,
         values
       );
       reload();
@@ -92,41 +117,6 @@ const Form = ({ reload }: any) => {
                 </MenuItem>
               ))}
             </TextField>
-            {/* <FormControl fullWidth>
-              <InputLabel
-                color="warning"
-                size="small"
-                id="demo-simple-select-label"
-                error={
-                  formik.touched.social_type &&
-                  Boolean(formik.errors.social_type)
-                }
-              >
-                نوع *
-              </InputLabel>
-
-              <Select
-                type="text"
-                id="social_type"
-                label="نوع"
-                name="social_type"
-                className="w-100"
-                size="small"
-                value={sfsdfe}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                // IconComponent={optionsSocial[0].icon}
-                error={
-                  formik.touched.social_type &&
-                  Boolean(formik.errors.social_type)
-                }
-                color="warning"
-              >
-                {optionsSocial.map((el) => (
-                  <MenuItem value={el.key}>{el.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl> */}
           </Grid>
 
           <Grid item xs={4}>
@@ -170,7 +160,9 @@ const Form = ({ reload }: any) => {
         </Grid>
       </Box>
       <div className="flex" style={{ justifyContent: "end" }}>
-        <Button variant="outlined">انصراف</Button>
+        <Button variant="outlined" onClick={cancelHandler}>
+          انصراف
+        </Button>
         <Button color="warning" variant="contained" type="submit">
           ایجاد مسیر ارتباطی توییتر
         </Button>

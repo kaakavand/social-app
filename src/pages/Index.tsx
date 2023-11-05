@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Layout from "../components/Layout";
 import {
@@ -14,14 +14,23 @@ import Form from "../components/Form";
 import SocialList from "../components/SocialList";
 import axios from "axios";
 import useSWR from "swr";
+import { Button } from "@mui/material";
+import CreateIcon from "@mui/icons-material/Create";
 
 export const Index = () => {
   const [first, setfirst] = useState(false);
   const [socialEdit, setSocialEdit] = useState<any>(null);
+
   const { data, error, isLoading, mutate } = useSWR(
     " http://localhost:3030/socials",
     axios
   );
+
+  useEffect(() => {
+    if (socialEdit) {
+      setfirst(true);
+    }
+  }, [socialEdit]);
 
   return (
     <Layout>
@@ -54,13 +63,31 @@ export const Index = () => {
               id="panel1bh-header"
               sx={{ background: "none", padding: "0" }}
             >
-              <AddIcon color="warning" sx={{ fontSize: 20 }} />
-              <Typography sx={{ color: "#FFAA28" }} fontSize={14}>
-                ایجاد مسیر ارتباطی
-              </Typography>
+              <Button
+                startIcon={
+                  socialEdit ? (
+                    <CreateIcon sx={{ fontSize: 10 }} />
+                  ) : (
+                    <AddIcon sx={{ fontSize: 10 }} />
+                  )
+                }
+                color="warning"
+                size="small"
+                variant="text"
+              >
+                {socialEdit ? "ویرایش مسیر ارتباطی" : "ایجاد مسیر ارتباطی"}
+              </Button>
+              <Typography sx={{ color: "#FFAA28" }} fontSize={14}></Typography>
             </AccordionSummary>
             <AccordionDetails sx={{ background: "#323D48", borderRadius: 2 }}>
-              <Form reload={() => mutate()} id={socialEdit} />
+              <Form
+                reload={() => mutate()}
+                id={socialEdit}
+                cancelHandler={() => {
+                  setSocialEdit(null);
+                  setfirst(false);
+                }}
+              />
             </AccordionDetails>
           </Accordion>
           <SocialList
