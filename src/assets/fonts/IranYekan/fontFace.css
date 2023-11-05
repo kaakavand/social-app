@@ -1,0 +1,12 @@
+@font-face {
+    font-family: "iranYekan";
+    font-style: normal;
+    font-weight: 400;
+    src:url("./IRANYekanMobileRegular.woff2") format("woff");
+}
+@font-face {
+    font-family: "iranYekan";
+    font-style: normal;
+    font-weight: 800;
+    src:url("./IRANYekanMobileExtraBold.woff2") format("woff");
+}
