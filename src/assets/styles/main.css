@@ -101,3 +101,7 @@ header .lang{
     border-radius: 5px;
     margin-left: 15px;
 }
+
+.warning_button_hover:hover{
+background-color: #c98416 !important;
+}

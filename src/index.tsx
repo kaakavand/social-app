@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client";
 import { Index } from "./pages/Index";
 import { StyleSheetManager, ThemeProvider } from "styled-components";
 import stylisRTLPlugin from "stylis-plugin-rtl";
-import "./main.css";
+import "./assets/styles/main.css";
 import { createTheme } from "@mui/material";
 
 const root = ReactDOM.createRoot(

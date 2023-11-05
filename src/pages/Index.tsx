@@ -100,7 +100,7 @@ export const Index = () => {
                 size="small"
                 variant="text"
               >
-                {socialEdit ? "ویرایش مسیر ارتباطی" : "ایجاد مسیر ارتباطی"}
+                {socialEdit ? "ویرایش مسیر ارتباطی" : "افزودن مسیر ارتباطی"}
               </Button>
               <Typography sx={{ color: "#FFAA28" }} fontSize={14}></Typography>
             </AccordionSummary>

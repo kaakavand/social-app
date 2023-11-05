@@ -32,19 +32,27 @@ const Form = ({
   const theme = useTheme();
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { trigger } = useSWRMutation(ServerConfig.BASE_URL + id, fetcher);
+  const [socialTypeName, setSocialTypeName] = useState("");
 
   useEffect(() => {
     (async () => {
       if (id) {
         const res = await trigger();
-        formik.setValues(res);
-        console.log(res);
+        formik.setValues({
+          social_type: res.social_type,
+          social_id: res.social_id,
+          social_link: res.social_link,
+        });
+        setSocialTypeName(
+          optionsSocial.filter((el) => el.key === res.social_type)[0].name
+        );
       } else if (id === null) {
         formik.setValues({
           social_type: "",
           social_id: "",
           social_link: "",
         });
+        setSocialTypeName("");
       }
     })();
   }, [id]);
@@ -64,16 +72,17 @@ const Form = ({
 
     validationSchema: userSchema,
     onSubmit: async (values) => {
+      const newList = data.data.filter((el : {id : string}) => el.id !== id)
       if (
-        !data.data
+        (!newList
           .map((el: itemInterFace) => el.social_id)
           .includes(values.social_id) &&
-        !data.data
+        !newList
           .map((el: itemInterFace) => el.social_link)
           .includes(values.social_link) &&
-        !data.data
+        !newList
           .map((el: itemInterFace) => el.social_type)
-          .includes(values.social_type)
+          .includes(values.social_type)) 
       ) {
         const res = await webService(
           id ? "put" : "post",
@@ -94,7 +103,9 @@ const Form = ({
         sx={{ color: theme.palette.mode === "dark" ? "#fff" : "#212121" }}
         fontSize={14}
       >
-        افزودن مسیر ارتباطی جدید
+        {id
+          ? " ویرایش مسیر ارتباطی" + " " + socialTypeName
+          : "افزودن مسیر ارتباطی"}
       </Typography>
       <Box>
         <Grid className="mb-2" container spacing={1}>
@@ -184,12 +195,14 @@ const Form = ({
           انصراف
         </Button>
         <Button
-          className="mr-2"
+          className="mr-2 warning_button_hover"
           color="warning"
           variant="contained"
           type="submit"
         >
-          ایجاد مسیر ارتباطی توییتر
+          {id
+            ? " ویرایش مسیر ارتباطی" + " " + socialTypeName
+            : "افزودن مسیر ارتباطی"}
         </Button>
       </div>
     </form>
