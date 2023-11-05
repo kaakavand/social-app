@@ -6,68 +6,122 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 import { optionsSocial } from "../config/options";
 import { webService } from "../functions/webService";
 import CreateIcon from "@mui/icons-material/Create";
 import Delete from "./Delete";
+import ServerConfig from './../config/server.json'
 
-const SocialList = ({ list, reload, editHandler }: any) => {
-  const deleteHandler = async (id: any) => {
+interface itemInterFace {
+  social_id : string,
+  social_link : string,
+  social_type : string,
+  id : string,
+}
+
+const SocialList = ({ list, reload, editHandler }: {reload : Function , editHandler: Function , list : any}) => {
+  const theme = useTheme();
+
+  const deleteHandler = async (id: string | number) => {
     const res = await webService(
       "delete",
-      "http://localhost:3030/socials/" + id
+      ServerConfig.BASE_URL + id
     );
     reload();
   };
 
+  console.log(theme);
+  
   return (
     <Box
       width={"100%"}
-      sx={{ background: "#323D48", borderRadius: 2, padding: "0" }}
+      sx={{
+        background: theme.palette.mode === "dark" ? "#323D48" : "#F4F6F8",
+        borderRadius: 2,
+        overflow: "hidden",
+        padding: "0",
+      }}
     >
       <TableContainer
-        sx={{ background: "#323D48", boxShadow: "none" }}
+        sx={{
+          background: theme.palette.mode === "dark" ? "#323D48" : "#F4F6F8",
+          boxShadow: "none",
+        }}
         component={Paper}
       >
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableBody>
-            {list?.data.map((el: any) => (
+            {list?.data.map((el: itemInterFace) => (
               <TableRow
                 key={el.social_id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row" className="">
-                  <div className="flex align-items-center">
+                  <div
+                    className="flex align-items-center"
+                    style={{ color: theme.palette.mode === "dark" ? 'white' : '#212121' }}
+                  >
                     {
                       optionsSocial.filter(
-                        (item: any) => item.key === el.social_type
+                        (item: {key : number}) => item.key === +el.social_type
                       )[0]?.icon
                     }
-                    {
-                      optionsSocial.filter(
-                        (item: any) => item.key === el.social_type
-                      )[0]?.name
-                    }
+
+                    <p className="mr-1">
+                      {
+                        optionsSocial.filter(
+                          (item: {key : number}) => item.key === +el.social_type
+                        )[0]?.name
+                      }
+                    </p>
                   </div>
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {el.social_id}
+                  <div className="flex">
+                    <Typography fontSize={12} marginRight={1}>
+                      آی دی (ID) :{" "}
+                    </Typography>
+                    <Typography
+                      fontSize={12}
+                      sx={{
+                        color:
+                          theme.palette.mode === "dark"
+                            ? theme.palette.warning.main
+                            : "#212121",
+                      }}
+                    >
+                      {el.social_id}
+                    </Typography>
+                  </div>
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {el.social_link}
+                  <div className="flex">
+                    <Typography fontSize={12} marginRight={1}>
+                      آی دی (ID) :{" "}
+                    </Typography>
+                    <Typography
+                      fontSize={12}
+                      sx={{ color: theme.palette.warning.main }}
+                    >
+                      {el.social_link}
+                    </Typography>
+                  </div>
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  <Delete onCLick={() => deleteHandler(el.id)} />
-                  <Button
-                    onClick={() => editHandler(el.id)}
-                    startIcon={<CreateIcon sx={{ fontSize: 10 }} />}
-                    color="warning"
-                    size="small"
-                    variant="text"
-                  >
-                    ویرایش
-                  </Button>
+                  <div className="flex text-left justify-content-left">
+                    <Button
+                      onClick={() => editHandler(el.id)}
+                      startIcon={<CreateIcon sx={{ fontSize: 10 }} />}
+                      color="warning"
+                      size="small"
+                      variant="text"
+                      className="ml-2"
+                    >
+                      ویرایش
+                    </Button>
+                    <Delete social_id={el.social_id} onCLickDelete={() => deleteHandler(el.id)} />
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

@@ -5,10 +5,6 @@
     font-family: 'IRANYekanX'!important;
 }
 
-body {
-    background-color: #151B25;
-}
-
 .flex {
     display: flex !important;
 }
@@ -24,4 +20,82 @@ margin-bottom: 1rem !important;
 
 .w-100 {
     width: 100%;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.justify-content-left {
+    justify-content: end;
+}
+
+.mr-2 {
+    margin-right: 1rem !important;
+}
+
+.mr-1 {
+    margin-right: 0.5rem !important;
+}
+.justicy-content-between {
+    justify-content: space-between;
+}
+.ml-2 {
+    margin-left: 1rem !important;
+}
+.mt-2 {
+    margin-top: 1rem !important;
+}
+
+
+.muirtl-1vxvp5a-MuiPaper-root-MuiDrawer-paper{
+    overflow: initial !important;
+    background-color: #202A35  !important;
+}
+.muirtl-1160xiw-MuiPaper-root-MuiDrawer-paper{
+    overflow: initial !important;
+
+}
+
+.light_mode {
+    background-color: #fff;
+    width: 90px;
+    height: 70px;
+    color: #212121;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.dark_mode {
+    background-color: #282624;
+    width: 90px;
+    height: 70px;
+    color: #FFAB23;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+header {
+    display: flex;
+    
+}
+
+header img {
+    width: 35px;
+    height: auto;
+    border-radius: 100%;
+}
+
+header .lang{
+    width: 50px;
+    border-radius: 5px;
+    margin-left: 15px;
 }

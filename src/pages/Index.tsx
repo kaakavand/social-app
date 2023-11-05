@@ -8,6 +8,7 @@ import {
   Box,
   Grid,
   Typography,
+  useTheme,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Form from "../components/Form";
@@ -16,13 +17,22 @@ import axios from "axios";
 import useSWR from "swr";
 import { Button } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
+import Breadcrumb from "../components/BreasCrumb";
+import ServerConfig from "./../config/server.json";
+
+interface itemInterFace {
+  social_id: string;
+  social_link: string;
+  social_type: string;
+  id?: string;
+}
 
 export const Index = () => {
   const [first, setfirst] = useState(false);
-  const [socialEdit, setSocialEdit] = useState<any>(null);
-
+  const [socialEdit, setSocialEdit] = useState<string | null>(null);
+  const [theme, setTheme] = useState(null);
   const { data, error, isLoading, mutate } = useSWR(
-    " http://localhost:3030/socials",
+    ServerConfig.BASE_URL,
     axios
   );
 
@@ -33,25 +43,40 @@ export const Index = () => {
   }, [socialEdit]);
 
   return (
-    <Layout>
+    <Layout themeChenge={(val: any) => setTheme(val)}>
       <Grid
         item
         xs={12}
-        justifyContent="center"
+        // justifyContent="center"
+        alignItems={"center"}
         display={"flex"}
-        alignItems="center"
-        height={"100vh"}
+        sx={{ flexDirection: "column" }}
+        // alignItems="center"
+        minHeight={"100vh"}
       >
+        <div className="text-right mb-2" style={{ width: "100%" }}>
+          <h2 style={{ color: theme !== "dark" ? "#202A35" : "#fff" }}>
+            حساب کاربری
+          </h2>
+          <Breadcrumb />
+        </div>
         <Box
           width={"100%"}
           sx={{
-            background: "#202A35",
+            background: theme === "dark" ? "#202A35" : "#fff",
             boxShadow: 3,
             borderRadius: 5,
             padding: "20px 20px",
           }}
         >
-          <p className="mb-2">مسیرهای ارتباطی</p>
+          <Typography
+            sx={{
+              color: theme === "dark" ? "#f6f6f6" : "#424242",
+            }}
+            fontSize={12}
+          >
+            مسیرهای ارتباطی
+          </Typography>
           <Accordion
             TransitionProps={{ unmountOnExit: true }}
             expanded={first === true}
@@ -79,8 +104,14 @@ export const Index = () => {
               </Button>
               <Typography sx={{ color: "#FFAA28" }} fontSize={14}></Typography>
             </AccordionSummary>
-            <AccordionDetails sx={{ background: "#323D48", borderRadius: 2 }}>
+            <AccordionDetails
+              sx={{
+                background: theme === "dark" ? "#323D48" : "#F4F6F8",
+                borderRadius: 2,
+              }}
+            >
               <Form
+                data={data}
                 reload={() => mutate()}
                 id={socialEdit}
                 cancelHandler={() => {

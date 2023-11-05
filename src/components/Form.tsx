@@ -4,26 +4,34 @@ import Button from "@mui/material/Button";
 import * as yup from "yup";
 import MenuItem from "@mui/material/MenuItem";
 import InputAdornment from "@mui/material/InputAdornment";
-import { Box, Grid, TextField, Typography } from "@mui/material";
+import { Box, Grid, TextField, Typography, useTheme } from "@mui/material";
 import { webService } from "../functions/webService";
 import { useFormik } from "formik";
 import { optionsSocial } from "../config/options";
 import useSWRMutation from "swr/mutation";
-import { Axios } from "axios";
-import CreateIcon from "@mui/icons-material/Create";
+import ServerConfig from "./../config/server.json";
 
-async function postRequest(url: any, id: any) {
-  return fetch(url + id, {
-    method: "get",
-  }).then((res) => res.json());
+interface itemInterFace {
+  social_id: string;
+  social_link: string;
+  social_type: string;
+  id?: string;
 }
 
-const Form = ({ reload, id, cancelHandler }: any) => {
+const Form = ({
+  reload,
+  id,
+  cancelHandler,
+  data,
+}: {
+  reload: Function;
+  id: string | null;
+  cancelHandler: any;
+  data: any;
+}) => {
+  const theme = useTheme();
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { trigger } = useSWRMutation(
-    "http://localhost:3030/socials/" + id,
-    fetcher
-  );
+  const { trigger } = useSWRMutation(ServerConfig.BASE_URL + id, fetcher);
 
   useEffect(() => {
     (async () => {
@@ -42,9 +50,9 @@ const Form = ({ reload, id, cancelHandler }: any) => {
   }, [id]);
 
   let userSchema = yup.object({
-    social_type: yup.string().required(),
-    social_id: yup.string().required(),
-    social_link: yup.string().required(),
+    social_type: yup.string().required("نوع حساب الزامسیت"),
+    social_id: yup.string().required("آی دی (ID) الزامیست"),
+    social_link: yup.string().required("لینک الزامیست"),
   });
 
   const formik = useFormik({
@@ -53,32 +61,41 @@ const Form = ({ reload, id, cancelHandler }: any) => {
       social_id: "",
       social_link: "",
     },
+
     validationSchema: userSchema,
     onSubmit: async (values) => {
-      const res = await webService(
-        id ? "put" : "post",
-        `http://localhost:3030/socials${id ? "/" + id : ""}`,
-        values
-      );
-      reload();
+      if (
+        !data.data
+          .map((el: itemInterFace) => el.social_id)
+          .includes(values.social_id) &&
+        !data.data
+          .map((el: itemInterFace) => el.social_link)
+          .includes(values.social_link) &&
+        !data.data
+          .map((el: itemInterFace) => el.social_type)
+          .includes(values.social_type)
+      ) {
+        const res = await webService(
+          id ? "put" : "post",
+          `${ServerConfig.BASE_URL}${id ? id : ""}`,
+          values
+        );
+        reload();
+      } else {
+        alert("asdf");
+      }
     },
   });
 
-  const sfsdfe = (
-    <svg
-      className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiBox-root css-uqopch"
-      focusable="false"
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      data-testid="InstagramIcon"
-    >
-      <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
-    </svg>
-  );
-
   return (
     <form onSubmit={formik.handleSubmit}>
-      <Typography className="mb-2">افزودن مسیر ارتباطی جدید</Typography>
+      <Typography
+        className="mb-2"
+        sx={{ color: theme.palette.mode === "dark" ? "#fff" : "#212121" }}
+        fontSize={14}
+      >
+        افزودن مسیر ارتباطی جدید
+      </Typography>
       <Box>
         <Grid className="mb-2" container spacing={1}>
           <Grid item xs={4}>
@@ -87,6 +104,7 @@ const Form = ({ reload, id, cancelHandler }: any) => {
               id="social_type"
               label="نوع"
               name="social_type"
+              autoComplete="off"
               className="w-100"
               size="small"
               value={formik.values.social_type}
@@ -126,6 +144,7 @@ const Form = ({ reload, id, cancelHandler }: any) => {
               id="social_link"
               label="لینک"
               name="social_link"
+              autoComplete="off"
               type="text"
               size="small"
               value={formik.values.social_link}
@@ -144,6 +163,7 @@ const Form = ({ reload, id, cancelHandler }: any) => {
               className="w-100"
               id="social_id"
               color="warning"
+              autoComplete="off"
               name="social_id"
               type="text"
               label="آی دی (ID)"
@@ -160,10 +180,15 @@ const Form = ({ reload, id, cancelHandler }: any) => {
         </Grid>
       </Box>
       <div className="flex" style={{ justifyContent: "end" }}>
-        <Button variant="outlined" onClick={cancelHandler}>
+        <Button variant="outlined" color="inherit" onClick={cancelHandler}>
           انصراف
         </Button>
-        <Button color="warning" variant="contained" type="submit">
+        <Button
+          className="mr-2"
+          color="warning"
+          variant="contained"
+          type="submit"
+        >
           ایجاد مسیر ارتباطی توییتر
         </Button>
       </div>
