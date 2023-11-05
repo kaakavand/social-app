@@ -113,7 +113,7 @@ const Form = ({
       </Typography>
       <Box>
         <Grid className="mb-2" container spacing={1}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               select
               id="social_type"
@@ -152,7 +152,7 @@ const Form = ({
             </TextField>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               color="warning"
               className="w-100"
@@ -173,7 +173,7 @@ const Form = ({
               }
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               className="w-100"
               id="social_id"
