@@ -44,6 +44,7 @@ const Form = ({
           social_id: res.social_id,
           social_link: res.social_link,
         });
+
         setSocialTypeName(
           optionsSocial.filter((el) => el.key === res.social_type)[0].name
         );
@@ -73,7 +74,12 @@ const Form = ({
 
     validationSchema: userSchema,
     onSubmit: async (values) => {
-      const newList = data.data.filter((el: { id: string }) => el.id !== id);
+      const newList = data?.data?.data?.filter(
+        (el: { _id: string }) => el._id !== id
+      );
+
+      console.log(newList);
+
       if (
         !newList
           .map((el: itemInterFace) => el.social_id)
@@ -90,9 +96,19 @@ const Form = ({
           `${ServerConfig.BASE_URL}${id ? id : ""}`,
           values
         );
-        if(!id){
-          formik.resetForm()
+
+        console.log(res);
+
+        if (res) {
+          if (!id) {
+            formik.resetForm();
+            toast.success("افزودن مسیر ارتباطی با موفقیت انجام شد");
+
+          } else {
+            toast.success("ویرایش با موفقیت انجام شد");
+          }
         }
+
         reload();
       } else {
         toast.error("مقادیر تکراری هستند");
@@ -112,7 +128,7 @@ const Form = ({
           : "افزودن مسیر ارتباطی"}
       </Typography>
       <Box>
-        <Grid className="mb-2" container spacing={1}>
+        <Grid className="mb-2" rowGap={4} container spacing={1}>
           <Grid item xs={12} sm={4}>
             <TextField
               select
@@ -134,7 +150,7 @@ const Form = ({
                   <InputAdornment position="start">
                     {formik.values.social_type &&
                       optionsSocial.filter(
-                        (el) => el.key === +formik.values.social_type
+                        (el) => el.key === formik.values.social_type
                       )[0].icon}
                   </InputAdornment>
                 ),
@@ -151,7 +167,6 @@ const Form = ({
               ))}
             </TextField>
           </Grid>
-
           <Grid item xs={12} sm={4}>
             <TextField
               color="warning"

@@ -42,6 +42,9 @@ export const Index = () => {
     }
   }, [socialEdit]);
 
+  console.log(data);
+  
+
   return (
     <Layout themeChenge={(val: any) => setTheme(val)}>
       <Grid

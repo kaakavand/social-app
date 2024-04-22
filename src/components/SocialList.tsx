@@ -11,28 +11,43 @@ import { optionsSocial } from "../config/options";
 import { webService } from "../functions/webService";
 import CreateIcon from "@mui/icons-material/Create";
 import Delete from "./Delete";
-import ServerConfig from './../config/server.json'
+import ServerConfig from "./../config/server.json";
+import { toast } from "react-toastify";
 
 interface itemInterFace {
-  social_id : string,
-  social_link : string,
-  social_type : string,
-  id : string,
+  social_id: string;
+  social_link: string;
+  social_type: string;
+  _id: string;
 }
 
-const SocialList = ({ list, reload, editHandler }: {reload : Function , editHandler: Function , list : any}) => {
+const SocialList = ({
+  list,
+  reload,
+  editHandler,
+}: {
+  reload: Function;
+  editHandler: Function;
+  list: any;
+}) => {
   const theme = useTheme();
 
-  const deleteHandler = async (id: string | number) => {
-    const res = await webService(
-      "delete",
-      ServerConfig.BASE_URL + id
-    );
+  const deleteHandler = async (item: any) => {
+    const res = await webService("delete", ServerConfig.BASE_URL + item._id);
+
+    console.log(res.message);
+    if(res.message === 'شبکه با موفقیت حذف شد'){
+      toast.success('مسیر ازتباطی با موفقیت حذف شد')
+    } else {
+      toast.error('حذف انجام نشد')
+
+    }
+    
+    
     reload();
   };
 
-  console.log(theme);
-  
+
   return (
     <Box
       width={"100%"}
@@ -52,7 +67,7 @@ const SocialList = ({ list, reload, editHandler }: {reload : Function , editHand
       >
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableBody>
-            {list?.data.map((el: itemInterFace) => (
+            {list?.data?.data?.map((el: itemInterFace) => (
               <TableRow
                 key={el.social_id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -60,18 +75,22 @@ const SocialList = ({ list, reload, editHandler }: {reload : Function , editHand
                 <TableCell component="th" scope="row" className="">
                   <div
                     className="flex align-items-center"
-                    style={{ color: theme.palette.mode === "dark" ? 'white' : '#212121' }}
+                    style={{
+                      color:
+                        theme.palette.mode === "dark" ? "white" : "#212121",
+                    }}
                   >
                     {
                       optionsSocial.filter(
-                        (item: {key : number}) => item.key === +el.social_type
+                        (item: { key: string }) => item.key === el.social_type
                       )[0]?.icon
                     }
 
                     <p className="mr-1">
                       {
                         optionsSocial.filter(
-                          (item: {key : number}) => item.key === +el.social_type
+                          (item: { key: string }) =>
+                            item.key === el.social_type
                         )[0]?.name
                       }
                     </p>
@@ -111,7 +130,7 @@ const SocialList = ({ list, reload, editHandler }: {reload : Function , editHand
                 <TableCell component="th" scope="row">
                   <div className="flex text-left justify-content-left">
                     <Button
-                      onClick={() => editHandler(el.id)}
+                      onClick={() => editHandler(el._id)}
                       startIcon={<CreateIcon sx={{ fontSize: 10 }} />}
                       color="warning"
                       size="small"
@@ -120,7 +139,10 @@ const SocialList = ({ list, reload, editHandler }: {reload : Function , editHand
                     >
                       ویرایش
                     </Button>
-                    <Delete social_id={el.social_id} onCLickDelete={() => deleteHandler(el.id)} />
+                    <Delete
+                      social_id={el.social_id}
+                      onCLickDelete={() => deleteHandler(el)}
+                    />
                   </div>
                 </TableCell>
               </TableRow>
